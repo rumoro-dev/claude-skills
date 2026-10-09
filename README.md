@@ -27,7 +27,9 @@
 
    To use them in one project only, copy them into that project's `.claude/skills/` instead.
 
-3. In Claude Code, run `/rumoro-setup`, and later `/rumoro-triage`.
+3. Put your product, reply rules and voice in the project's `CLAUDE.md`. [`templates/CLAUDE.md`](templates/CLAUDE.md) shows the shape; fill in the placeholders. `/rumoro-triage` follows it when it drafts replies.
+
+4. In Claude Code, run `/rumoro-setup`, and later `/rumoro-triage`.
 
 ### With an API key instead
 
@@ -37,6 +39,10 @@ For CI, a server, or if sign-in doesn't work, create a key on the API keys page 
 claude mcp add --transport http rumoro https://mcp.rumoro.dev/mcp \
   --header "Authorization: Bearer $RUMORO_API_KEY"
 ```
+
+## The rules the skills keep
+
+Reply only where you'd answer without a product to sell. Answer first, say you work on the product when it comes up, and don't pitch. No direct messages, no duplicate replies. The skills find, sort and draft; you decide and post every reply yourself.
 
 ## Pricing
 

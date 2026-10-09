@@ -28,7 +28,7 @@ If nothing came back, say so and offer `get_mention_stats` for the last 7 days.
 
 ## 2. Act on the mentions the user picks
 
-- **Reply**: draft an answer that helps first, discloses the affiliation when the product comes up, and fits the platform's tone. Show the draft. Do not post it.
+- **Reply**: draft an answer that helps first, discloses the affiliation when the product comes up, and fits the platform's tone. If the project's `CLAUDE.md` has reply rules and a voice, follow them. Show the draft. Do not post it.
 - **Bug report**: if the mention describes a bug in this repository, find the likely place in the code and draft a GitHub issue with a title, steps to reproduce and the link to the mention.
 - **Not relevant**: call `update_mention` with `relevant: false` to record the correction.
 - **Later**: call `update_mention` with `snoozedUntil` to hide it until a time the user picks.
