@@ -1,47 +1,47 @@
 ---
 name: rumoro-setup
-description: Set up Rumoro social listening for the product in this repository. Reads the repo to learn what the product is, fills in the Rumoro company profile, proposes brand, competitor and topic keywords, and creates them once the user agrees. Use when the user asks to set up Rumoro, track mentions of this project, or monitor competitors.
+description: Connect this codebase's product to Rumoro social listening. Works out what the product is from the repository, writes the company profile Rumoro scores posts against, and suggests brand, competitor and topic keywords to create after the user approves them. Use when the user wants to set up Rumoro, start monitoring mentions of this project, or keep an eye on competitors.
 ---
 
-# Set up Rumoro for this product
+# Rumoro setup
 
-Every tool below comes from the Rumoro MCP server. If it is not connected, ask the user to run `claude mcp add --transport http rumoro https://mcp.rumoro.dev/mcp`, then `/mcp`, choose `rumoro` and Authenticate in the browser. If a tool still answers `Unauthorized`, do not report the sign-in as done: tell the user they can add the server with an API key instead, as this repository's README describes.
+The tools named here belong to the Rumoro MCP server. If they're unavailable, ask the user to run `claude mcp add --transport http rumoro https://mcp.rumoro.dev/mcp`, then open `/mcp`, pick `rumoro` and Authenticate. If a tool still returns `Unauthorized`, the sign-in didn't happen: point the user to the API-key option in this repository's README instead.
 
-Nothing is created or changed without the user's yes.
+Ask before every change. Nothing is created until the user says yes.
 
-## 1. Learn the product
+## 1. Read the project
 
-Read the repository's README, package manifest and any landing page copy. Write down, in the user's own words where you can:
+Look through the README, the package manifest and any landing-page copy, and note:
 
-- the product name and two sentences on what it does and who it is for
-- three to six use cases
-- the website, and the product's X and LinkedIn handles if they appear
-- competitors the repo names or clearly competes with
+- the product's name, and in a sentence or two, what it does and for whom
+- a handful of use cases (three to six)
+- the website, plus X or LinkedIn handles if the repo mentions them
+- competitors, whether named or obvious from the space
 
-Call `whoami` to confirm the workspace and `get_company` to see what is already saved. Show the user your draft and let them correct it.
+Then call `whoami` (which workspace this is) and `get_company` (what's already saved), and show the user your notes so they can fix anything wrong.
 
-## 2. Fill in the company profile
+## 2. Write the company profile
 
-Call `update_company` with `name`, `description`, `useCases`, `website`, `accounts` (`x`, `linkedin`) and `competitors`. Rumoro's classifier reads this profile to decide whether a post is about the company, so be specific. "An open-source Postgres migration CLI for TypeScript teams" works far better than "a developer tool".
+Save it with `update_company`: `name`, `description`, `useCases`, `website`, `accounts` (`x`, `linkedin`) and `competitors`. Rumoro scores every post against this profile, so precise beats broad. "A deploy tool for small teams running Docker on their own servers" gets better results than "a developer tool".
 
-## 3. Propose keywords, then create them
+## 3. Agree on keywords
 
-Propose a list and wait for a yes:
+Suggest a short list and wait for the user's answer:
 
-- **brand**: the product name, plus distinctive variants such as the package name or domain. If the name is also a common word, add `matching.requiredTerms` so only relevant posts match (for example `arc` with `requiredTerms: ["browser"]`).
+- **brand**: the product's name and any distinctive variants, such as the package or domain name. A name that's also an everyday word needs `matching.requiredTerms`, for example `driftwood` with `requiredTerms: ["deploy"]`.
 - **competitor**: one keyword per competitor.
-- **topic**: at most two phrases people use when they have the problem the product solves, not broad category words.
+- **topic**: one or two phrases people type when they have the problem, never a whole category.
 
-For each agreed keyword, call `add_keyword` with `term` and `kind`, plus a one-sentence `context` when the term is ambiguous. Leave `platforms` out so the keyword tracks every platform, including ones Rumoro adds later. If the product has an iOS app, add its App Store link to the brand keyword's `reviewSources`. Google Play, Trustpilot and Google Maps pages can be connected too, but their reviews are not collected yet, so say so if the user asks.
+## 4. Create them
 
-Each keyword costs $5 per month, charged daily from the prepaid balance, and each matched mention costs $0.008. Say this before creating more than five keywords.
+Call `add_keyword` for each approved term with its `term` and `kind`, and add a one-line `context` when the term could be misread. Leave out `platforms` so the keyword covers every platform, including future ones. For an iOS app, put its App Store link in the brand keyword's `reviewSources`. Google Play, Trustpilot and Google Maps pages can be added too, but their reviews aren't collected yet; say so if asked.
 
-If `add_keyword` returns `insufficient_balance`, the balance does not cover a day of keywords; tell the user to add funds on the Billing page at https://app.rumoro.dev. `keyword_limit_reached` means the workspace has hit the 500 running keyword limit.
+Pricing to mention before creating more than five: $5 per keyword per month, taken daily from the prepaid balance, plus $0.008 for each matched mention.
 
-## 4. Tell the user what happens next
+Two errors to expect: `insufficient_balance` means the balance won't cover another day of keywords (the user can add funds on the Billing page at https://app.rumoro.dev), and `keyword_limit_reached` means 500 keywords are already running.
 
-A new keyword reads back recent posts on most platforms, so the first matches arrive soon after it is created. DEV and news collect only from the moment the keyword starts.
+## 5. After setup
 
-## 5. Offer one alert
+Tell the user that most platforms look back over recent posts when a keyword is created, so results start arriving soon; DEV and news only collect posts published from now on.
 
-Call `list_channels`. If a channel exists, offer a daily digest: `create_alert` with `name: "Daily digest"`, `mode: "daily"`, `schedule: { "hour": 9, "timezone": "<the user's IANA timezone>" }` and `channelIds` set to that channel. If there is no channel, tell the user they can connect Slack, Telegram or email under Settings › Integrations in the Rumoro dashboard.
+Finally, call `list_channels`. If there's a channel, offer a morning summary: `create_alert` with `name: "Daily digest"`, `mode: "daily"`, `schedule: { "hour": 9, "timezone": "<the user's IANA timezone>" }` and `channelIds` set to it. With no channel yet, explain that Slack, Telegram and email are connected under Settings › Integrations in the Rumoro dashboard.

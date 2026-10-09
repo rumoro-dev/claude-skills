@@ -1,38 +1,42 @@
 ---
 name: rumoro-triage
-description: Triage today's Rumoro mentions from Claude Code. Lists the relevant mentions since yesterday grouped by what needs doing (buying intent, questions, bugs and complaints), drafts replies or GitHub issues for the ones the user picks, and marks mentions done or ignored when asked. Use when the user asks what people are saying about the product, what came in today, or to go through their mentions.
+description: Work through new Rumoro mentions inside Claude Code. Pulls the relevant posts from the last day, sorts them into buying signals, questions and problems, drafts replies or GitHub issues for the ones the user chooses, and records what was handled. Use when the user asks what's new, what people are saying about the product, or wants to clear their mentions.
 ---
 
-# Triage today's mentions
+# Rumoro triage
 
-Every tool below comes from the Rumoro MCP server. This skill never posts anything. The user replies by hand.
+The tools named here belong to the Rumoro MCP server. Nothing is ever posted for the user; they publish replies themselves.
 
-If the Rumoro tools are missing or answer `Unauthorized`, do not report the sign-in as done: tell the user to run `claude mcp add --transport http rumoro https://mcp.rumoro.dev/mcp`, then `/mcp`, choose `rumoro` and Authenticate, or to add the server with an API key as this repository's README describes.
+If the Rumoro tools are missing or return `Unauthorized`, the sign-in didn't happen: ask the user to run `claude mcp add --transport http rumoro https://mcp.rumoro.dev/mcp`, then `/mcp`, pick `rumoro` and Authenticate, or to use the API-key option in this repository's README.
 
-## 1. See what came in
+## Collect
 
-Call `search_mentions` with `relevant: true`, `status: "open"`, `since` set to the start of yesterday in the user's timezone (ISO 8601), `sort: "priority"` and `limit: 50`. If the user named a platform or a keyword, add `platforms` or `keywordIds`.
+Call `search_mentions` with `relevant: true`, `status: "open"`, `sort: "priority"`, `limit: 50` and `since` set to the start of yesterday in the user's timezone (ISO 8601). Add `platforms` or `keywordIds` if the user asked about a specific platform or keyword.
 
-Then call `list_keywords` with `kind: ["competitor"]` (no `limit`, so every competitor keyword comes back) and keep their `id`s. A mention whose `keyword.id` is one of them matched a competitor.
+Also call `list_keywords` with `kind: ["competitor"]` (no `limit`, so all of them come back) and remember their `id`s: a mention whose `keyword.id` is in that list is about a competitor.
 
-Put each mention in one group only, in this order:
+## Sort
 
-1. **Buying intent**: `classification.intents` contains `buy_intent`, or `churn_intent` on a competitor keyword (someone leaving a competitor).
-2. **Questions**: `question`.
-3. **Bugs and complaints**: `bug_report` or `complaint`, or a review with `review.rating` of 1 or 2.
-4. **Everything else**, one line each.
+Give every mention exactly one bucket, checking them in this order:
 
-Show one line per mention: the platform (`post.platform`), who wrote it (`author.name` or `author.handle`, with `author.followers` when known), what they said in one sentence, and the link (`post.url`). Add the classifier's `classification.note` in brackets when it helps.
+1. **Buying signals**: `classification.intents` includes `buy_intent`, or `churn_intent` on a competitor's keyword.
+2. **Questions**: the intent `question`.
+3. **Problems**: `bug_report` or `complaint`, or a review whose `review.rating` is 1 or 2.
+4. **Other**: everything left.
 
-If nothing came back, say so and offer `get_mention_stats` for the last 7 days.
+Show each mention on one line: `post.platform`, the author (`author.name` or `author.handle`, plus `author.followers` if known), a one-sentence summary, and `post.url`. Add `classification.note` in brackets when it explains the score.
 
-## 2. Act on the mentions the user picks
+No results? Say so, and offer `get_mention_stats` for the past 7 days instead.
 
-- **Reply**: draft an answer that helps first, discloses the affiliation when the product comes up, and fits the platform's tone. If the project's `CLAUDE.md` has reply rules and a voice, follow them. Show the draft. Do not post it.
-- **Bug report**: if the mention describes a bug in this repository, find the likely place in the code and draft a GitHub issue with a title, steps to reproduce and the link to the mention.
-- **Not relevant**: call `update_mention` with `relevant: false` to record the correction.
-- **Later**: call `update_mention` with `snoozedUntil` to hide it until a time the user picks.
+## Act
 
-## 3. Close the loop
+For each mention the user picks:
 
-When the user says a mention is handled, call `update_mention` with `status: "done"`. When it is noise, use `status: "ignored"`. End with a short summary of how many mentions were handled, ignored and left open.
+- **Reply**: write a draft that solves the person's problem first, says the user works on the product if it comes up, and sounds like the platform. When the project's `CLAUDE.md` sets reply rules or a voice, those win. Show it; don't post it.
+- **Bug report**: if the post describes a bug in this codebase, find where it probably lives and draft a GitHub issue (title, steps to reproduce, link to the post).
+- **Not relevant**: `update_mention` with `relevant: false`, so the correction is recorded.
+- **Later**: `update_mention` with `snoozedUntil` set to when the user wants to see it again.
+
+## Wrap up
+
+Mark handled mentions with `update_mention` and `status: "done"`, and noise with `status: "ignored"`. Finish with a count: handled, ignored, still open.

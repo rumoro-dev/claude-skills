@@ -40,9 +40,9 @@ claude mcp add --transport http rumoro https://mcp.rumoro.dev/mcp \
   --header "Authorization: Bearer $RUMORO_API_KEY"
 ```
 
-## The rules the skills keep
+## What the skills will and won't do
 
-Reply only where you'd answer without a product to sell. Answer first, say you work on the product when it comes up, and don't pitch. No direct messages, no duplicate replies. The skills find, sort and draft; you decide and post every reply yourself.
+They search, sort and draft; you decide what gets published and post it yourself. Drafts help the person first and mention your product only where it truly fits, with your affiliation stated. The skills never post, never send direct messages, and never reuse a reply across threads.
 
 ## Pricing
 
