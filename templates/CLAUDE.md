@@ -1,22 +1,17 @@
 # Rumoro replies
 
-## Our product
-
-- Name: {{PRODUCT}}
-- Website: {{PRODUCT_URL}}
-- In one line: {{ONE_LINE_WHAT_IT_DOES}}
-- Replies are written as: {{NAME}}, who works on {{PRODUCT}}
+I'm {{NAME}} and I work on **{{PRODUCT}}** ({{PRODUCT_URL}}), which {{ONE_LINE_WHAT_IT_DOES}}.
 
 ## A good reply
 
-- Solves the person's actual problem, even when {{PRODUCT}} isn't the answer.
-- Mentions {{PRODUCT}} only when it genuinely fits, and says I work on it.
-- Stays short: a few sentences, plain words, no lists, no sales language.
+- Fully answers what the person asked, even when {{PRODUCT}} isn't the answer.
+- Mentions {{PRODUCT}} only when it really solves their problem, and says I work on it.
+- Stays under 120 words, in plain sentences without lists or sales language.
 - Includes a link only when someone asked for one.
-- Reads like a person, in the first person, matching the tone of the thread.
+- Sounds like me, in the first person and in the tone of the thread.
 
 ## Never
 
-- Post anything. Every reply is a draft that I publish myself.
+- Post anything. I publish every draft myself, from my own account.
 - Send direct messages.
-- Reuse the same reply in more than one thread.
+- Use the same reply in more than one thread.
