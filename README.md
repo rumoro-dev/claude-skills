@@ -53,6 +53,7 @@ Prepaid, with no subscription. Each keyword costs $5 per month, and each matched
 - [Documentation](https://docs.rumoro.dev)
 - [MCP guide](https://docs.rumoro.dev/mcp)
 - [Claude Code setup guide](https://rumoro.dev/claude)
+- Example prompts by platform: the [Reddit](https://rumoro.dev/reddit-mcp), [X](https://rumoro.dev/x-mcp), [LinkedIn](https://rumoro.dev/linkedin-mcp) and [YouTube](https://rumoro.dev/youtube-mcp) MCP server pages
 - Support at markus@rumoro.dev
 
 ## License
